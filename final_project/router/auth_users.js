@@ -5,13 +5,13 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username) => { // for register
+const isValid = (username) => { // 1. for `/register`
   let userWithSameName = users.filter((user) => {
     return user.userName === username;
   });
 
   if (userWithSameName.length > 0) {
-    return true;
+    return true; // if user with same name exists
   } else {
     return false;
   }
@@ -23,11 +23,11 @@ const authenticatedUser = (username, password) => {
   });
 
   if (authenticatedUser > 0) {
-    return true;
+    return true;  // if user exists 
   } else {
     return false;
   }
-};
+}
 
 //only registered users can login
 regd_users.post("/login", (req, res) => {

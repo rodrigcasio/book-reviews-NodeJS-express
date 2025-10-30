@@ -4,15 +4,21 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
-public_users.post("/register", (req,res) => {
+public_users('/register', (req, res) => {   // 1.
   const username = req.body.username;
   const password = req.body.password;
-  
-  if (username && password) {
+
+  if (username, password) {
+
     if (!isValid(username)) {
-       users.push({ "username": username, "password": password });
+      users.push({ "username": username, "password": password });   // adding new user to `users db`
+      res.status(200).json({ message: `User successfully registered. Now you can Log in.`});
+    } else {
+      res.status(400).json({ message: `User already exists. Please try again.` });
     }
+
+  } else {
+    res.status(400).json({ messsage: `Unable to register user. Please try again.`});
   }
 });
 
