@@ -12,8 +12,9 @@ public_users('/register', (req, res) => {   // 1.
 
     if (!isValid(username)) {
       users.push({ "username": username, "password": password });   // adding new user to `users db`
-      res.status(200).json({ message: `User successfully registered. Now you can Log in.`});
+      return res.status(200).json({ message: `User successfully registered. Now you can Log in.`});
     } else {
+
       res.status(400).json({ message: `User already exists. Please try again.` });
     }
 

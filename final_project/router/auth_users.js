@@ -34,8 +34,20 @@ regd_users.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  
+  if (!username || !password) {
+    return res.status(400).json({ messsage: 'Error logging in. Please try again'});
+  }
 
+  if (authenticatedUser(username, password)) {
+    let accessToken = jwt.sign({ data: password }, 'access', { expiresIn = '5m' });
+
+    req.session.authorization = { accessToken, username };
+
+    return res.status(200).json({ message: `User successfully logged in` });
+  } else {
+
+    return res.status(400).json({ message: `Unable to login. Please register first` });
+  }
 });
 
 // Add a book review
