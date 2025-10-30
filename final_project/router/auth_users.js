@@ -5,7 +5,7 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username) => {
+const isValid = (username) => { // for register
   let userWithSameName = users.filter((user) => {
     return user.userName === username;
   });
@@ -18,22 +18,23 @@ const isValid = (username) => {
 }
 
 const authenticatedUser = (username, password) => {
-  const validUser = users.filter((user) => {
-    return user.username === username && user.password === password;
+  const athenticatedUser = users.filter((user) => {
+    return user.username === username && user.password === password;    // returns array with existing user (needed for ''/login')
   });
 
-  if (validUser.length > 0) {
+  if (authenticatedUser > 0) {
     return true;
   } else {
     return false;
   }
-
 };
 
 //only registered users can login
 regd_users.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+
+  
 
 });
 
