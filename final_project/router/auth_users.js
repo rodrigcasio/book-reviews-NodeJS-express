@@ -5,7 +5,7 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username) => { // 1. for `/register`
+const isValid = (username) => { // 1 for `/register`
   let userWithSameName = users.filter((user) => {
     return user.userName === username;
   });
@@ -17,7 +17,7 @@ const isValid = (username) => { // 1. for `/register`
   }
 }
 
-const authenticatedUser = (username, password) => {
+const authenticatedUser = (username, password) => { // 2. for `/login`
   const athenticatedUser = users.filter((user) => {
     return user.username === username && user.password === password;    // returns array with existing user (needed for ''/login')
   });
@@ -39,7 +39,7 @@ regd_users.post("/login", (req, res) => {
   }
 
   if (authenticatedUser(username, password)) {
-    let accessToken = jwt.sign({ data: password }, 'access', { expiresIn = '5m' });
+    let accessToken = jwt.sign({ data: password }, 'access', { expiresIn = '5m' });   // 'access' is the signature
 
     req.session.authorization = { accessToken, username };
 

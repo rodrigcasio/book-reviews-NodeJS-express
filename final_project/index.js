@@ -14,8 +14,24 @@ app.use("/customer",session({
   saveUninitialized: true
 }));
 
-app.use("/customer/auth/*", (req, res, next) => {
+app.use("/customer/auth/*", (req, res, next) => { // 3. verifying JWT
+  if (req.session.authorization) {
+    let token = req.session.authorization['accessToken'];
 
+    jwt.verify(token, 'access' , (err, decoded) => {
+      if (err) {
+        console.log(`JWT verification failed (invalid or expired token: ${err.message}`);
+        return res.status(403).json({ message: `User is not authenticated` });
+      }
+
+      req.user = decoded
+      next();
+      }
+    });
+
+  } else {
+    res.status(403).json({ message: `User not logged in. Please log in first` });
+  }
 });
  
 const PORT = 5000;
