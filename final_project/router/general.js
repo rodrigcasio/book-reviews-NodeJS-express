@@ -69,30 +69,39 @@ public_users.get('/isbn/:isbn', (req, res) => {
   });
  });
   
-// Get book details based on author
-public_users.get('/author/:author', (req, res) => {
+public_users.get('/author/:author', (req, res) => {   // Get book details based on author 6.
   const author = req.params.author;
 
   if (!author || author.trim() === '') {
     return res.status(400).json({ message: `Invalid author. Please try again` });
   }
 
-  const bookFound = findBook(books, "author", author);    // finding whole book with 'findBook function helper'
+  let bookFound = findBook(books, "author", author);    // finding whole book with 'findBook function helper'
   if(!bookFound){
     return res.status(400).json({ message: `Book not available with named author: ${author}. Please try again.` });
   }
 
-  return res.status(200).json({
+  res.status(200).json({
     Book: bookFound
   });
 });
 
 
+public_users.get('/title/:title', (req, res) => {  // Get all books based on title 7.
+  const title = req.params.title;
 
-// Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  if (!title) {
+    return res.status(400).json({ message: `Invalid title. Please try again` });
+  }
+
+  let bookFound = findBook(books, "title", title);
+  if (!bookFound) {
+    return res.status(400).json({ message: `Book not available with named title: ${title}. Please try again` });
+  }
+  
+  res.status(200).json({
+    Book: bookFound
+  });
 });
 
 //  Get book review
