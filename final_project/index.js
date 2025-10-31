@@ -19,7 +19,7 @@ app.use("/customer/auth/*", (req, res, next) => { // 3. verifying JWT
   if (req.session.authorization) {
     let token = req.session.authorization['accessToken'];
 
-    jwt.verify(token, 'access' , (err, decoded) => {
+    jwt.verify(token, 'access', (err, decoded) => {
       if (err) {
         console.log(`JWT verification failed (invalid or expired token: ${err.message}`);
         return res.status(403).json({ message: `User is not authenticated` });

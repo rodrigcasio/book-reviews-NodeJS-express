@@ -19,7 +19,7 @@ const isValid = (username) => { // 1 for `/register`
 
 const authenticatedUser = (username, password) => { // 2. for `/login`
   const athenticatedUser = users.filter((user) => {
-    return user.username === username && user.password === password;    // returns array with existing user (needed for ''/login')
+    return (user.username === username && user.password === password);    // returns array with existing user (needed for ''/login')
   });
 
   if (authenticatedUser > 0) {
@@ -39,8 +39,8 @@ regd_users.post("/login", (req, res) => {
   }
 
   if (authenticatedUser(username, password)) {
-    let accessToken = jwt.sign({ data: password }, 'access', { expiresIn: '5m' });   // 'access' is the signature
 
+    let accessToken = jwt.sign({ data: password }, 'access', { expiresIn: '5m' });   // 'access' is the signature
     req.session.authorization = { accessToken, username };
 
     return res.status(200).json({ message: `User successfully logged in` });
