@@ -18,11 +18,6 @@ const findBook = (object, property, propertyValue) => {   // obtaining the book 
   }
 }
 
-const findBook = (object, property) => {
-  for (const key in object) {
-    
-  }
-}
 
 public_users.post('/register', (req, res) => {   // 1.1
   const username = req.body.username;
