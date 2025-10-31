@@ -18,11 +18,11 @@ const isValid = (username) => { // 1 for `/register`
 }
 
 const authenticatedUser = (username, password) => { // 2. for `/login`
-  const athenticatedUser = users.filter((user) => {
+  const validUser = users.filter((user) => {
     return (user.username === username && user.password === password);    // returns array with existing user (needed for ''/login')
   });
 
-  if (authenticatedUser > 0) {
+  if (validUser > 0) {
     return true;  // if user exists 
   } else {
     return false;
