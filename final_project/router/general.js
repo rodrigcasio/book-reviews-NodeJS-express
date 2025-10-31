@@ -29,7 +29,7 @@ public_users.get('/', (req, res) => {
     return res.status(400).json({ message: `No books available` });
   }
   
-  return res.status(200).send(JSON.strigify(books, null, 4));
+  res.status(200).send(JSON.stringify(books, null, 2));
 });
 
 // Get book details based on ISBN
