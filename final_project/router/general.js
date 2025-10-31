@@ -42,10 +42,17 @@ public_users.get('/isbn/:isbn', (req, res) => {
   }
   
   if (!book) {
-    return res.status(400).json({ message: `Could not find book with '${isbn}'.`});
+    return res.status(400).json({ message: `Could not find book with ISBN: '${isbn}'.`});
   }
   
-  res.status(200).json({ ISBN: book, author: book[author], title: book[title], reviews: book[reviews] });
+  //returning valid isbn
+  res.status(200).json({
+    ISBN: isbn,
+    Author: book.author,
+    Title: book.title,
+    Reviews: book.reviews
+  });
+
  });
   
 // Get book details based on author
