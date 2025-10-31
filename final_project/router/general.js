@@ -4,7 +4,19 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-// helper function 
+// helper function
+
+const findBook = (object, property, propertyValue) => {   // obtaining the book from given URL parameter
+  for (const key in object) {
+    if(object.hasOwnProperty(key)) {
+      let book = object[key];
+
+      if (book[property] && book[property] === propertyValue) {
+        return book;
+      }
+    }
+  }
+}
 
 const findBook = (object, property) => {
   for (const key in object) {
@@ -65,22 +77,15 @@ public_users.get('/isbn/:isbn', (req, res) => {
 // Get book details based on author
 public_users.get('/author/:author', (req, res) => {
   const author = req.params.author;
-  
-  for(const key in books) {
-    for(const isbn in key) {
-      if(isbn["author"] === author){
-        return res.status(200).json({
-          ISBN: isbn,
-          Author: author,
-          Title: isbn.title,
-          Reviews: isbn.reviews
-        });
-      } else {
-        res.status(400).json({ message: 'No book available'});
-      }
-    }
+
+  const bookFound = findBook(books, "author", toString(author));
+  if(!bookFound){
+    return res.status(400).json({ message: `Book not available with named author: ${author}. Please try again.` });
   }
 
+  return res.status(200).json({
+    Book: bookFound
+  });
 });
 
 
