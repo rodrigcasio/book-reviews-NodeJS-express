@@ -50,7 +50,7 @@ public_users.get('/', (req, res) => {
 // Get book details based on ISBN         // 5.
 public_users.get('/isbn/:isbn', (req, res) => {
   const isbn = req.params.isbn;
-  const book = books[isbn];
+  let book = books[isbn];
 
   if (!isbn) {
     return res.status(400).json({ message: `Invalid ISBN. Please try again` });
@@ -104,10 +104,21 @@ public_users.get('/title/:title', (req, res) => {  // Get all books based on tit
   });
 });
 
-//  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/review/:isbn', (req, res) => { //  Get book review 8.
+  const isbn = req.params.isbn;
+  let book = books[isbn];
+
+  if (!isbn) {
+    return res.status(400).json({ message: `Invalid title. Please try again` });
+  }
+
+  if (!book) {
+    return res.status(200).json({ message: `Could not find book with ISBN: '${isbn}'.` });
+  }
+
+  res.status(200).json({
+    Book Reviews: book[reviews]
+  });
 });
 
 module.exports.general = public_users;
