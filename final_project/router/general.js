@@ -32,10 +32,20 @@ public_users.get('/', (req, res) => {
   res.status(200).send(JSON.stringify(books, null, 2));
 });
 
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+// Get book details based on ISBN         // 5.
+public_users.get('/isbn/:isbn', (req, res) => {
+  const isbn = req.params.isbn;
+  const book = books[isbn];
+
+  if (!isbn) {
+    return res.status(400).json({ message: `Invalid ISBN. Please try again` });
+  }
+  
+  if (!book) {
+    return res.status(400).json({ message: `Could not find book with '${isbn}'.`});
+  }
+  
+  res.status(200).json({ ISBN: book, author: book[author], title: book[title], reviews: book[reviews] });
  });
   
 // Get book details based on author
