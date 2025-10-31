@@ -27,7 +27,6 @@ app.use("/customer/auth/*", (req, res, next) => { // 3. verifying JWT
 
       req.user = decoded
       next();
-      }
     });
 
   } else {
