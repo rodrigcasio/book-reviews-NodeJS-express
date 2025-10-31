@@ -42,6 +42,6 @@ app.use("/", genl_routes);    // login ()
 
 
 app.listen(PORT, () => {
-  console.log(`Server Running.. `);
+  console.log(`Server Running in http://localhost:${PORT}`);
 });
 
