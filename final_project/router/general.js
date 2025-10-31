@@ -117,8 +117,8 @@ public_users.get('/review/:isbn', (req, res) => { //  Get book review 8.
   }
 
   res.status(200).json({
-    Book: book[title],
-    "Book Reviews": book[reviews]
+    Book: book.title,
+    "Book Reviews": book.reviews
   });
 });
 
