@@ -23,10 +23,13 @@ public_users('/register', (req, res) => {   // 1.1
   }
 });
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+// Get the book list available in the shop    // 4.
+public_users.get('/', (req, res) => {
+  if (!books) {
+    return res.status(400).json({ message: `No books available` });
+  }
+  
+  return res.status(200).send(JSON.strigify(books, null, 4));
 });
 
 // Get book details based on ISBN
