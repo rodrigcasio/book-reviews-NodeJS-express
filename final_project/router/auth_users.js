@@ -29,7 +29,7 @@ const authenticatedUser = (username, password) => { // 2. for `/login`
   }
 }
 
-//only registered users can login
+//only registered users can login within /customer/login
 regd_users.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;

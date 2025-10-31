@@ -36,8 +36,8 @@ app.use("/customer/auth/*", (req, res, next) => { // 3. verifying JWT
  
 const PORT = 5000;
 
-app.use("/customer", customer_routes);
-app.use("/", genl_routes);    // login ()
+app.use("/customer", customer_routes);  // for /login
+app.use("/", genl_routes);
 
 
 app.listen(PORT, () => {
