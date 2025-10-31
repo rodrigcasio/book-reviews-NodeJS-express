@@ -4,6 +4,14 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// helper function 
+
+const findBook = (object, property) => {
+  for (const key in object) {
+    
+  }
+}
+
 public_users.post('/register', (req, res) => {   // 1.1
   const username = req.body.username;
   const password = req.body.password;
@@ -40,11 +48,11 @@ public_users.get('/isbn/:isbn', (req, res) => {
   if (!isbn) {
     return res.status(400).json({ message: `Invalid ISBN. Please try again` });
   }
-  
+
   if (!book) {
     return res.status(400).json({ message: `Could not find book with ISBN: '${isbn}'.`});
   }
-  
+
   //returning valid isbn
   res.status(200).json({
     ISBN: isbn,
@@ -52,14 +60,30 @@ public_users.get('/isbn/:isbn', (req, res) => {
     Title: book.title,
     Reviews: book.reviews
   });
-
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/author/:author', (req, res) => {
+  const author = req.params.author;
+  
+  for(const key in books) {
+    for(const isbn in key) {
+      if(isbn["author"] === author){
+        return res.status(200).json({
+          ISBN: isbn,
+          Author: author,
+          Title: isbn.title,
+          Reviews: isbn.reviews
+        });
+      } else {
+        res.status(400).json({ message: 'No book available'});
+      }
+    }
+  }
+
 });
+
+
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
