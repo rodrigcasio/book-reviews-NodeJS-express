@@ -73,7 +73,11 @@ public_users.get('/isbn/:isbn', (req, res) => {
 public_users.get('/author/:author', (req, res) => {
   const author = req.params.author;
 
-  const bookFound = findBook(books, "author", toString(author));
+  if (!author || author.trim() === '') {
+    return res.status(400).json({ message: `Invalid author. Please try again` });
+  }
+
+  const bookFound = findBook(books, "author", author);    // finding whole book with 'findBook function helper'
   if(!bookFound){
     return res.status(400).json({ message: `Book not available with named author: ${author}. Please try again.` });
   }
