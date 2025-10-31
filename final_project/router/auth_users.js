@@ -22,7 +22,7 @@ const authenticatedUser = (username, password) => { // 2. for `/login`
     return (user.username === username && user.password === password);    // returns array with existing user (needed for ''/login')
   });
 
-  if (validUser > 0) {
+  if (validUser.length > 0) {
     return true;  // if user exists 
   } else {
     return false;
