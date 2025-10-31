@@ -58,19 +58,18 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(400).json({ message: `Could not find book. Please try again` });
   }
 
-  let review = req.query.review;
-  let username = req.session.authorization["username"];
+  const review = req.query.review;
+  const username = req.session.authorization["username"];
 
   if (!review) {
     return res.status(400).json({ message: 'Missing review. Please place a review' });
   }
 
-  book.reviews.push({ username: review });
+  book.reviews[{ username: review }];
 
   res.status(200).json({
-    "New Review",
-    User: username,
-    Review: review
+    user: username,
+    review: review
   });
 });
 
