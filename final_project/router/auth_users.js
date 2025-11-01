@@ -69,7 +69,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   book.reviews[username] = { review: review }; // placing an object named as the username that holds key-pair (review : 'review')
 
   res.status(200).json({
-    message: `Review successfully added by user ${username}`,
+    message: `Review successfully added by user: ${username}`,
     review: review
   });
 });
