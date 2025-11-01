@@ -66,10 +66,10 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(400).json({ message: 'Missing review. Please place a review' });
   }
 
-  book.reviews = [{ user: username, review: review }]; // placing two properites within an array of review objects
+  book.reviews[username] = { review: review }; // placing an object named as the username that holds key-pair (review : 'review')
 
   res.status(200).json({
-    user: username,
+    message: `Review successfully added by user ${username}`,
     review: review
   });
 });
@@ -78,21 +78,22 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 regd_users.delete('/auth/review/:isbn', (req, res) => {
   const isbn = req.params.isbn;
   const book = books[isbn];
-  
+
   if (!book) {
-    return res.status(400).json({ message: `Could not find book. Please try again.`});
+    return res.status(400).json({ message: `Could not find book. Please try again` });
   }
 
-  let username = req.session.authorization.username;
   let reviews = book.reviews;
+  let username = req.session.authorization.username;
 
-  if (reviews.length < 0) {
-    return res.status(200).json({ message: `There are no reviews published.` });
+  if (reviews[username]) {
+    delete reviews[username];
+    
+    return res.status(200).json({ message: `Review has been deleted successfully` });
+  } else {
+
+    return res.status(400).json({ message: `Invalid operation. User has not posted a review for book ${book.title}. Please try again` });
   }
-
-  reviews = reviews.filter((user) => user.username !== username);
-  return res.status(200).json({ message: `Review has been deleted successfully.` });
-  
 });
 
 
