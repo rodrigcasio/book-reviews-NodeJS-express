@@ -61,6 +61,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   let review = req.query.review;
   let username = req.session.authorization.username;
+  console.log(`User adding review: ${username}`);
 
   if (!review) {
     return res.status(400).json({ message: 'Missing review. Please place a review' });
