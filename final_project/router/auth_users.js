@@ -70,6 +70,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   res.status(200).json({
     message: `Review successfully added by user: ${username}`,
+    Book: book.title, 
     review: review
   });
 });
@@ -89,7 +90,7 @@ regd_users.delete('/auth/review/:isbn', (req, res) => {   // 10.
   if (reviews[username]) {
     delete reviews[username];
     
-    return res.status(200).json({ message: `Review has been deleted successfully` });
+    return res.status(200).json({ message: `Review for book '${book.title}' has been deleted successfully` });
   } else {
 
     return res.status(400).json({ message: `Invalid operation. User has not posted a review for book ${book.title}. Please try again` });
