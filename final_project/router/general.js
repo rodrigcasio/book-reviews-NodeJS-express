@@ -2,7 +2,10 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+const axios = require('axios');
+
 const public_users = express.Router();
+
 
 // helper function
 
@@ -48,7 +51,8 @@ public_users.get('/', (req, res) => {
 });
 
 // Get book details based on ISBN         // 5.
-public_users.get('/isbn/:isbn', (req, res) => {
+public_users.get('/isbn/:isbn', async (req, res) => {
+  
   const isbn = req.params.isbn;
   let book = books[isbn];
 
@@ -60,6 +64,21 @@ public_users.get('/isbn/:isbn', (req, res) => {
     return res.status(400).json({ message: `Could not find book with ISBN: '${isbn}'.`});
   }
 
+  try {
+    const response = await axios.get(`http://localhost:5000/isbn/:isbn`);
+    res.status(200).json({
+      ISBN: response,
+      Author: book.author,
+      Title: book.title,
+      Reviews: book.reviews
+    });
+  } catch (err) {
+    res.status(400).json({ message: `Error fetching data. Please try again`});
+  }
+
+
+
+/*
   //returning valid isbn
   res.status(200).json({
     ISBN: isbn,
@@ -67,6 +86,7 @@ public_users.get('/isbn/:isbn', (req, res) => {
     Title: book.title,
     Reviews: book.reviews
   });
+*/
  });
   
 public_users.get('/author/:author', (req, res) => {   // Get book details based on author 6.
