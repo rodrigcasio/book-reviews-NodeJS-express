@@ -21,7 +21,6 @@ const findBook = (object, property, propertyValue) => {   // obtaining the book 
   }
 }
 
-
 public_users.post('/register', (req, res) => {   // 1.1
   const username = req.body.username;
   const password = req.body.password;
@@ -41,53 +40,30 @@ public_users.post('/register', (req, res) => {   // 1.1
   }
 });
 
-// Get the book list available in the shop    // 4.
-public_users.get('/', (req, res) => {
-  if (!books) {
-    return res.status(400).json({ message: `No books available` });
-  }
+
+
+// Get the book list available in the shop    // 4. 10. Implementing async/await wth axios
+public_users.get('/', async (req, res) => {
   
-  res.status(200).send(JSON.stringify(books, null, 2));
+  try {
+    const response = await axios.get(books);
+    let allBooks = response.data;
+    
+    if (allBooks){
+      res.status(200).json(alBooks);
+    } else {
+      res.status(400).json({ message: `There are no books available at the moment.` });
+    }
+  } catch (err) {
+    console.log(`Error fetching Books`, err.message);
+    res.status(500).json({ message: `Internal Server Error while fetching books. Please try again` });
+  }
 });
 
-// Get book details based on ISBN         // 5.
+// Get book details based on ISBN         // 5. | 11. implementing async/await with Axios
 public_users.get('/isbn/:isbn', async (req, res) => {
   
-  const isbn = req.params.isbn;
-  let book = books[isbn];
-
-  if (!isbn) {
-    return res.status(400).json({ message: `Invalid ISBN. Please try again` });
-  }
-
-  if (!book) {
-    return res.status(400).json({ message: `Could not find book with ISBN: '${isbn}'.`});
-  }
-
-  try {
-    const response = await axios.get(`http://localhost:5000/isbn/:isbn`);
-    res.status(200).json({
-      ISBN: response,
-      Author: book.author,
-      Title: book.title,
-      Reviews: book.reviews
-    });
-  } catch (err) {
-    res.status(400).json({ message: `Error fetching data. Please try again`});
-  }
-
-
-
-/*
-  //returning valid isbn
-  res.status(200).json({
-    ISBN: isbn,
-    Author: book.author,
-    Title: book.title,
-    Reviews: book.reviews
-  });
-*/
- });
+});
   
 public_users.get('/author/:author', (req, res) => {   // Get book details based on author 6.
   const author = req.params.author;
@@ -143,3 +119,43 @@ public_users.get('/review/:isbn', (req, res) => { //  Get book review 8.
 });
 
 module.exports.general = public_users;
+
+
+/*  
+ *  Approaches worth mentioning
+ 
+  Using custom Promise to fetch by ISBN
+
+// async function for (11)
+const findBookIsbn = (isbn) => {
+  return new Promise((reject, resolve) => {
+    let book = books[isbn];
+    setTimeout(() => {  // for practice 
+      if (book) {
+        console.log(`Fetched book with ISBN: ${isbn} successfully.`);
+        resolve(book);
+      } else {
+        reject(new Error(`Could not find book with ISBN: ${isbn}. Please try again`));
+      }
+    }, 500);
+  });
+}
+
+// Get book details based on ISBN         // 5. | 11. implementing custom Promise
+public_users.get('/isbn/:isbn', async (req, res) => {
+  const isbn = req.params.isbn;
+  
+  try {
+    const bookDetails = await findBookIsbn(isbn);
+    res.status(200).json({
+      ISBN: bookDetals,
+      Author: bookDetails.author,
+      Title: bookDetails.title,
+      Reviews: bookDetails.reviews
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+ */
