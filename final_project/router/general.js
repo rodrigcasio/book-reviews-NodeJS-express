@@ -40,22 +40,36 @@ public_users.post('/register', (req, res) => {   // 1.1
   }
 });
 
+const getAllBooks = (books) => {
+  return new Promise((resolve, reject) => {
+    let allBooks = books;
+    setTimeout(() => {
+      if (allBooks) {
+        console.log(`Books database fetched`);
+        resolve(allBooks);
+      } else {
+        reject(new Error(`There are no books available at the moment`));
+      }
+    }, 500);
+  });
+}
 
 
-// Get the book list available in the shop    // 4. 10. Implementing async/await wth axios
+// Get the book list available in the shop    // 4. 10. Implementing async/await with custom Promise 
 public_users.get('/', async (req, res) => {
-  
+  const booksdb = books;
+
   try {
-    const response = await axios.get(books);
-    let allBooks = response.data;
-    
-    if (allBooks){
-      res.status(200).json(alBooks);
+    const fetchedBooks = await getAllBooks(booksdb);
+
+    if (fetchedBooks) {
+      res.status(200).send(JSON.stringify(fetchedBooks, null, 2));
     } else {
-      res.status(400).json({ message: `There are no books available at the moment.` });
+      res.status(404).json({ message: `Could not find available books.` });
     }
+
   } catch (err) {
-    console.log(`Error fetching Books`, err.message);
+    console.error(`Error fetching data: ${err.message}.`);
     res.status(500).json({ message: `Internal Server Error while fetching books. Please try again` });
   }
 });
