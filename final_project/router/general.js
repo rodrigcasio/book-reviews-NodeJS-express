@@ -7,20 +7,6 @@ const axios = require('axios');
 const public_users = express.Router();
 
 
-// helper function
-
-const findBook = (object, property, propertyValue) => {   // obtaining the book from given URL parameter
-  for (const key in object) {
-    if(object.hasOwnProperty(key)) {
-      let book = object[key];
-
-      if (book[property] && book[property] === propertyValue) {
-        return book;
-      }
-    }
-  }
-}
-
 public_users.post('/register', (req, res) => {   // 1.1
   const username = req.body.username;
   const password = req.body.password;
@@ -40,7 +26,7 @@ public_users.post('/register', (req, res) => {   // 1.1
   }
 });
 
-const getAllBooks = (books) => {
+const getAllBooks = (books) => {  // for '/' endpoint.
   return new Promise((resolve, reject) => {
     let allBooks = books;
     setTimeout(() => {
@@ -53,7 +39,6 @@ const getAllBooks = (books) => {
     }, 500);
   });
 }
-
 
 // Get the book list available in the shop    // 4. 10. Implementing async/await with custom Promise 
 public_users.get('/', async (req, res) => {
@@ -196,5 +181,22 @@ public_users.get('/isbn/:isbn', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+
+// helper function (before implementing custom Promise pattern and async/await with axios)
+
+const findBook = (object, property, propertyValue) => {   // obtaining the book from given URL parameter
+  for (const key in object) {
+    if(object.hasOwnProperty(key)) {
+      let book = object[key];
+
+      if (book[property] && book[property] === propertyValue) {
+        return book;
+      }
+    }
+  }
+}
+
 
  */
