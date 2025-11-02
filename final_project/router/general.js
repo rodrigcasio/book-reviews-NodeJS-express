@@ -63,7 +63,7 @@ public_users.get('/', async (req, res) => {
     const fetchedBooks = await getAllBooks(booksdb);
 
     if (fetchedBooks) {
-      res.status(200).send(JSON.stringify(fetchedBooks, null, 2));
+      res.status(200).json(fetchedBooks);
     } else {
       res.status(404).json({ message: `Could not find available books.` });
     }
@@ -76,7 +76,32 @@ public_users.get('/', async (req, res) => {
 
 // Get book details based on ISBN         // 5. | 11. implementing async/await with Axios
 public_users.get('/isbn/:isbn', async (req, res) => {
+  const isbn = req.params.isbn;
   
+  const booksUrl = `http://localhost:5000/`;
+  
+  try {
+    const response = await axios.get(booksUrl);
+    let allBooks = response.data;
+
+    let bookDetails = allBooks[isbn];
+
+    if (bookDetails) {
+      console.log(`Book successfully fetched by using ISBN ${isbn}.`);
+      res.status(200).json({
+        ISBN: isbn,
+        Author: bookDetails.author,
+        Title: bookDetails.title,
+        Reviews: bookDetails.reviews
+      });
+
+    } else {
+      res.status(404).json({ message: `Could not find book with ISBN: '${isbn}'. Please try again` });
+    }
+  } catch (err) {
+    console.error(`Error fetching data: ${err.message}`);
+    res.status(500).json({ message: `Internal Server Error while fetching book data. Please try again` });
+  }
 });
   
 public_users.get('/author/:author', (req, res) => {   // Get book details based on author 6.
