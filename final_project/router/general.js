@@ -109,7 +109,7 @@ public_users.get('/isbn/:isbn', async (req, res) => {
 public_users.get('/author/:author', async (req, res) => {   // Get book details based on author 6.  | 12. implementing async/await with Axios
   const author = req.params.author;
 
-  let booksUrl = `http://localhost:5000/`;
+  const booksUrl = `http://localhost:5000/`;
   
   try {
     const response = await axios.get(booksUrl);
@@ -139,7 +139,28 @@ public_users.get('/author/:author', async (req, res) => {   // Get book details 
 public_users.get('/title/:title', async (req, res) => {  // Get all books based on title 7. 
   const title = req.params.title;
 
+  const booksUrl = `http://localhost:5000/`
 
+  try {
+    const response = await axios.get(booksUrl);
+    let allBooks = response.data;
+
+    const bookFound = findBookByProperty(allBooks, "title", title);
+    if (bookFound) {
+      console.log(`Book successfully fetched by using book title: ${title}`);
+      res.status(200).json({
+        ISBN: bookFound.isbn,
+        Author: bookFound.book.author,
+        Title: bookFound.book.title,
+        Reviews: bookFound.book.reviews
+      });
+    } else {
+      res.status(404).json({ message: `Could not find book with title: ${title}. Please try again` });
+    }
+  } catch (err) {
+    console.error(`Error fetching data: ${err.message}`);
+    res.status(500).json({ message: `Internal Server Error while fetching book data. Please try again` });
+  }
 });
 
 public_users.get('/review/:isbn', (req, res) => { //  Get book review 8.
