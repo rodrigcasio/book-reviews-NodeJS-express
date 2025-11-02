@@ -6,6 +6,23 @@ const axios = require('axios');
 
 const public_users = express.Router();
 
+// helper function for `/author/:author & /title/:title`
+const findBookByProperty = (object, property, propertyValue) => { // obtains the book and the key that holds the book (isbn)
+  for (const key in object) {
+    if(object.hasOwnProperty(key)) {
+      let book = object[key];
+
+      if (book[property] && book[property] === propertyValue) {
+        return { // returning an object
+          isbn: key,
+          book: book
+        };
+      }
+    }
+  }
+  
+  return null; // if not book found
+}
 
 public_users.post('/register', (req, res) => {   // 1.1
   const username = req.body.username;
@@ -63,7 +80,7 @@ public_users.get('/', async (req, res) => {
 public_users.get('/isbn/:isbn', async (req, res) => {
   const isbn = req.params.isbn;
   
-  const booksUrl = `http://localhost:5000/`;
+  let booksUrl = `http://localhost:5000/`;
   
   try {
     const response = await axios.get(booksUrl);
@@ -88,40 +105,41 @@ public_users.get('/isbn/:isbn', async (req, res) => {
     res.status(500).json({ message: `Internal Server Error while fetching book data. Please try again` });
   }
 });
-  
-public_users.get('/author/:author', (req, res) => {   // Get book details based on author 6.
+
+public_users.get('/author/:author', async (req, res) => {   // Get book details based on author 6.  | 12. implementing async/await with Axios
   const author = req.params.author;
 
-  if (!author || author.trim() === '') {
-    return res.status(400).json({ message: `Invalid author. Please try again` });
-  }
+  let booksUrl = `http://localhost:5000/`;
+  
+  try {
+    const response = await axios.get(booksUrl);
+    let allBooks = response.data;
 
-  let bookFound = findBook(books, "author", author);    // finding whole book with 'findBook function helper'
-  if(!bookFound){
-    return res.status(400).json({ message: `Book not available with named author: ${author}. Please try again.` });
-  }
+    let foundBook = findBookByProperty(allBooks, "author", author);
+    if (foundBook) {
+      console.log(`Book successfully fetched by using author named: ${author}`);
+      res.status(200).json({
+        ISBN: foundBook.isbn,
+        Author: foundBook.book.author,
+        Title: foundBook.book.title,
+        Reviews: foundBook.book.reviews
+      });
 
-  res.status(200).json({
-    Book: bookFound
-  });
+    } else {
+      res.status(404).json({ message: `Could not find book with Author named '${author}'. Please try again` });
+    }
+  
+  } catch (err) {
+    console.log(`Error fetching data: ${err.message}.`);
+    res.status(500).json({ message: `Internal Server Error while fetching book data. Please try again` });
+  }
 });
 
 
-public_users.get('/title/:title', (req, res) => {  // Get all books based on title 7.
+public_users.get('/title/:title', async (req, res) => {  // Get all books based on title 7. 
   const title = req.params.title;
 
-  if (!title) {
-    return res.status(400).json({ message: `Invalid title. Please try again` });
-  }
 
-  let bookFound = findBook(books, "title", title);
-  if (!bookFound) {
-    return res.status(400).json({ message: `Book not available with named title: ${title}. Please try again` });
-  }
-  
-  res.status(200).json({
-    Book: bookFound
-  });
 });
 
 public_users.get('/review/:isbn', (req, res) => { //  Get book review 8.
@@ -181,22 +199,6 @@ public_users.get('/isbn/:isbn', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-
-
-
-// helper function (before implementing custom Promise pattern and async/await with axios)
-
-const findBook = (object, property, propertyValue) => {   // obtaining the book from given URL parameter
-  for (const key in object) {
-    if(object.hasOwnProperty(key)) {
-      let book = object[key];
-
-      if (book[property] && book[property] === propertyValue) {
-        return book;
-      }
-    }
-  }
-}
 
 
  */
